@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WEB page</title>
+    <link rel="stylesheet" href="/stylesheets/application.css" type="text/css">
+  </head>
+  <body>
+    <div id="container">
+      <h1>You said '<%= word %>' and '<%= @hint %>'</h1>
+      <h1>attempt: '<%= attempt %>'</h1>
+      <p>Please, enter 4 number into 1-6</p>
+      <form method="post" action="/send_answer">
+        <input type="text" id="answer" placeholder="1234" pattern="[1-6]{4}">
+        <input type="submit" value="check">
+      </form>
+    </div>
+  </body>
+</html>

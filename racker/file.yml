@@ -1,0 +1,3 @@
+--- !ruby/object:Codebreaker::Game
+secret_code: '3154'
+result: ''
