@@ -13,7 +13,8 @@ class GameRacker
   end
 
   def save_object_game(object,file_name)
-    File.open(file_name, 'w') {|f| f.write(YAML.dump(object)) }
+    path = File.expand_path("../../#{file_name}", __FILE__)
+    File.open(path, 'w') {|f| f.write(YAML.dump(object)) }
   end
 
   def answer(user_code)
