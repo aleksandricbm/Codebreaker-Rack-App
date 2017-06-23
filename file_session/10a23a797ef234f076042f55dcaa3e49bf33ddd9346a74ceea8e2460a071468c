@@ -1,7 +1,0 @@
---- !ruby/object:GameRacker
-game: !ruby/object:Codebreaker::Game
-  secret_code: '3536'
-  result: ''
-result_answer: []
-user_name: kjhgkjhg
-attempts: 5

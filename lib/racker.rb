@@ -14,12 +14,15 @@ class Racker
     @request = Rack::Request.new(env)
     @request.session["init"] = true
     @session_id = @request.session['session_id']
+    @file_name = File.expand_path("../../#{PATH}#{@session_id}", __FILE__)
     init_session
   end
 
   def init_session
-    if File.file? PATH+@session_id.to_s
-      @game_racker = YAML.load_file(PATH+@session_id.to_s)
+
+    binding.pry
+    if File.file? @file_name
+      @game_racker = YAML.load_file(@file_name)
     else
       @game_racker = GameRacker.new(@request['user_name'])
     end
@@ -54,13 +57,13 @@ class Racker
   end
 
   def go
-    @game_racker.save_object_game(@game_racker,PATH + @session_id)
+    @game_racker.save_object_game(@game_racker,@file_name)
     Rack::Response.new(render_with_layout('game.html.erb'))
   end
 
   def save_score
     @game_racker.save_score
-    FileUtils.rm(PATH+@session_id.to_s)
+    FileUtils.rm(@file_name)
   end
 
   def render_with_layout(template, context = self)
