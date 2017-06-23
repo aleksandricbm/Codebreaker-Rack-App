@@ -1,0 +1,7 @@
+--- !ruby/object:GameRacker
+game: !ruby/object:Codebreaker::Game
+  secret_code: '6561'
+  result: ''
+result_answer: []
+user_name: jjj
+attempts: 5

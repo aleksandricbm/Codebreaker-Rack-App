@@ -19,8 +19,8 @@ class Racker
   end
 
   def init_session
-
     binding.pry
+    FileUtils::mkdir 'file_session' unless File.exists? PATH
     if File.file? @file_name
       @game_racker = YAML.load_file(@file_name)
     else
