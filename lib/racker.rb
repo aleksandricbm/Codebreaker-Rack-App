@@ -4,7 +4,7 @@ require_relative 'game'
 
 class Racker
   attr_accessor :attempts
-  PATH = "/file_session/"
+  PATH = "file_session/"
 
   def self.call(env)
     new(env).response.finish
