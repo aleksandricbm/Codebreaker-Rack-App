@@ -1,0 +1,35 @@
+GIT
+  remote: https://github.com/aleksandricbm/Codebreaker.git
+  revision: 065d0289936e47eed9082e702301e39a8bdabe72
+  branch: processing
+  specs:
+    codebreaker (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    byebug (9.0.6)
+    coderay (1.1.1)
+    method_source (0.8.2)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
+    rack (2.0.3)
+    rake (12.0.0)
+    slop (3.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  codebreaker!
+  pry-byebug
+  rack
+  rake
+
+BUNDLED WITH
+   1.15.0
