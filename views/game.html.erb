@@ -1,0 +1,17 @@
+<form method="post" action="/send_answer" class="form-inline">
+  <div class="form-group">
+    <label for="answer">Please, enter 4 number into 1-6: </label>
+    <input type="text" class="form-control" id="answer" name="answer" placeholder="1234" pattern="[1-6]{4}" value="1234" autofocus>
+    <button type="submit" class="btn btn-xs btn-success">Submit</button>
+  </div>
+</form>
+<br>
+<% if !@game_racker.answer_list.empty?  %>
+  <p class="text-primary">You answers</p>
+  <dl class="dl-horizontal">
+  <% @game_racker.answer_list.each do |answer| %>
+    <dt>[<%= answer[1] %>]</dt>
+    <dd><%= answer[0] %></dd>
+  <% end %>
+  </dl>
+<% end %>

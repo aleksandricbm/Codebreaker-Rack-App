@@ -1,11 +1,10 @@
 require 'erb'
-require 'codebreaker'
 require 'pry-byebug'
-require 'rack-cache'
-require 'dalli'
+require_relative 'game'
 
 class Racker
-  ATTEMPT_COUNT = 5
+  attr_accessor :attempts
+  PATH = "./file_session/"
 
   def self.call(env)
     new(env).response.finish
@@ -13,46 +12,67 @@ class Racker
 
   def initialize(env)
     @request = Rack::Request.new(env)
-    @game = Codebreaker::Game.new
-    @game.start
-    @hint = @game.hint
-    #File.open('./file.yml', 'w') {|f| f.write(YAML.dump(@game)) }
-    m = YAML.load(File.read('./file.yml'))
-    puts m.attempt('3122')
-    binding.pry
+    @request.session["init"] = true
+    @session_id = @request.session['session_id']
+    init_session
+  end
+
+  def init_session
+    if File.file? PATH+@session_id.to_s
+      @game_racker = YAML.load_file(PATH+@session_id.to_s)
+    else
+      @game_racker = GameRacker.new(@request['user_name'])
+    end
   end
 
   def response
     case @request.path
-    when '/' then Rack::Response.new(render('index.html.erb'))
-    when '/send_answer'
-      Rack::Response.new do |response|
-        num= attempt.to_i-1
-        return Rack::Response.new('Game Over', 404) if num<1
-
-        @game.attempt(ui.user_number)
-        response.set_cookie('hint', @hint)
-        response.set_cookie('attempt', num)
-#        binding.pry
-        response.redirect('/')
-#        binding.pry
-      end
+    when '/' then  Rack::Response.new(render_with_layout('index.html.erb'))
+    when '/send_answer' then answer
+    when '/game' then  go
+    when '/game_over' then  lost
+    when '/win' then  win
     else Rack::Response.new('Not Found', 404)
     end
   end
 
-  def render(template)
-    path = File.expand_path("../../views/#{template}", __FILE__)
-    ERB.new(File.read(path)).result(binding)
+  def lost
+    save_score
+    Rack::Response.new(render_with_layout('game_over.html.erb'))
   end
 
-  def attempt
-    #binding.pry
-    @request.cookies['attempt'] || ATTEMPT_COUNT
+  def answer
+    return lost if @game_racker.attempts<1
+    @game_racker.answer(@request.params['answer'])
+    return win if @game_racker.answer_list.first[1] == '++++'
+    go
   end
 
-  def word
-    @request.cookies['word'] || 'Nothing'
+  def win
+    save_score
+    Rack::Response.new(render_with_layout('win.html.erb'))
+  end
+
+  def go
+    @game_racker.save_object_game(@game_racker,PATH + @session_id)
+    Rack::Response.new(render_with_layout('game.html.erb'))
+  end
+
+  def save_score
+    @game_racker.save_score
+    FileUtils.rm(PATH+@session_id.to_s)
+  end
+
+  def render_with_layout(template, context = self)
+    template = File.expand_path("../../views/#{template}", __FILE__)
+    render_layout do
+      ERB.new(File.read(template)).result(binding)
+    end
+  end
+
+  def render_layout
+    layout = File.read(File.expand_path("../../views/header.html.erb", __FILE__))
+    ERB.new(layout).result(binding)
   end
 
 end
