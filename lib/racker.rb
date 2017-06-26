@@ -1,10 +1,12 @@
 require 'erb'
 require 'pry-byebug'
 require_relative 'game'
+require 'time'
+require 'date'
 
 class Racker
   attr_accessor :attempts
-  PATH = "file_session/"
+  PATH = 'file_session/'.freeze
 
   def self.call(env)
     new(env).response.finish
@@ -12,31 +14,37 @@ class Racker
 
   def initialize(env)
     @request = Rack::Request.new(env)
-    @request.session["init"] = true
+    @request.session['init'] = true
     @session_id = @request.session['session_id']
     @file_name = File.expand_path("../../#{PATH}#{@session_id}", __FILE__)
     init_session
   end
 
   def init_session
-    binding.pry
-    FileUtils::mkdir 'file_session' unless File.exists? PATH
-    if File.file? @file_name
-      @game_racker = YAML.load_file(@file_name)
-    else
-      @game_racker = GameRacker.new(@request['user_name'])
-    end
+    FileUtils.mkdir 'file_session' unless File.exist? PATH
+    @game_racker = if File.file? @file_name
+                     YAML.load_file(@file_name)
+                   else
+                     GameRacker.new(@request['user_name'])
+                   end
   end
 
   def response
     case @request.path
-    when '/' then  Rack::Response.new(render_with_layout('index.html.erb'))
+    when '/' then new_game
     when '/send_answer' then answer
-    when '/game' then  go
-    when '/game_over' then  lost
+    when '/game' then go
+    when '/game_over' then lost
     when '/win' then  win
+    when '/score' then score
     else Rack::Response.new('Not Found', 404)
     end
+  end
+
+  private
+
+  def new_game
+    Rack::Response.new(render_with_layout('index.html.erb'))
   end
 
   def lost
@@ -45,10 +53,17 @@ class Racker
   end
 
   def answer
-    return lost if @game_racker.attempts<1
+    #binding.pry
+    return new_game if @request.params['answer'].nil?
+    return go if @game_racker.hint < 1 && @request.params['answer'] == 'hint'
+    return lost if @game_racker.attempts < 1
     @game_racker.answer(@request.params['answer'])
     return win if @game_racker.answer_list.first[1] == '++++'
     go
+  end
+
+  def score
+    Rack::Response.new(render_with_layout('score.html.erb'))
   end
 
   def win
@@ -57,7 +72,7 @@ class Racker
   end
 
   def go
-    @game_racker.save_object_game(@game_racker,@file_name)
+    @game_racker.save_object_game(@game_racker, @file_name)
     Rack::Response.new(render_with_layout('game.html.erb'))
   end
 
@@ -74,8 +89,7 @@ class Racker
   end
 
   def render_layout
-    layout = File.read(File.expand_path("../../views/header.html.erb", __FILE__))
+    layout = File.read(File.expand_path('../../views/header.html.erb', __FILE__))
     ERB.new(layout).result(binding)
   end
-
 end

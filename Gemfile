@@ -1,4 +1,10 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
+gem 'codebreaker', git: 'https://github.com/aleksandricbm/Codebreaker.git', branch: 'processing'
 gem 'rack'
-gem 'codebreaker', :git => 'https://github.com/aleksandricbm/Codebreaker.git', :branch => "processing"
-gem 'pry-byebug'
+
+group :development do
+  gem 'pry-byebug'
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'rubocop'
+end
