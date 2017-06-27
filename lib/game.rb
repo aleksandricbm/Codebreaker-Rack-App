@@ -43,8 +43,14 @@ class GameRacker
   end
 
   def save_score
-    file = YAML.load_file('score.yaml') || {}
+    path_file = File.expand_path("../../score.yaml", __FILE__)
+
+    file = if File.exist? path_file
+             YAML.load_file(path_file)
+           else
+             {}
+           end
     file[Time.now.strftime('%s')] = [@user_name, @result_answer]
-    File.open('score.yaml', 'w') { |f| f.puts file.to_yaml }
+    File.open(path_file, 'w') { |f| f.puts file.to_yaml }
   end
 end
