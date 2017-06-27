@@ -1,5 +1,6 @@
 require 'codebreaker'
 
+# This GameRaker for Codebreaker gem
 class GameRacker
   attr_accessor :attempts
   ATTEMPT_COUNT = 5
@@ -20,8 +21,8 @@ class GameRacker
 
   def answer(user_code)
     attempt
-    return @attempts=0 if user_code == 'hint' && @hint < 1
-    return @result_answer.push(['hint', @game.hint]) && @hint-=1 if user_code == 'hint'
+    return @attempts = 0 if user_code == 'hint' && @hint < 1
+    return @result_answer.push(['hint', @game.hint]) && @hint -= 1 if user_code == 'hint'
     @result_answer.push([user_code, @game.attempt(user_code)])
   end
 
@@ -30,9 +31,7 @@ class GameRacker
     ATTEMPT_COUNT
   end
 
-  def hint
-    @hint
-  end
+  attr_reader :hint
 
   def answer_list
     @result_answer.reverse
@@ -43,7 +42,7 @@ class GameRacker
   end
 
   def save_score
-    path_file = File.expand_path("../../score.yaml", __FILE__)
+    path_file = File.expand_path('../../score.yaml', __FILE__)
 
     file = if File.exist? path_file
              YAML.load_file(path_file)
