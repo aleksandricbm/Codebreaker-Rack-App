@@ -1,4 +1,5 @@
 require './lib/racker'
+require 'yaml'
 
 app = Rack::Builder.new do
   use Rack::Reloader, 0
