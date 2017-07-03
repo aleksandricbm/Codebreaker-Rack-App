@@ -1,0 +1,20 @@
+<div class="jumbotron">
+  <p><a class="btn btn-lg btn-success" href="/" role="button">Start Game</a></p>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+    <tr><td>Date</td><td>Name</td><td>Results</td></tr>
+    <% @game_racker.score.each do |elem| %>
+      <tr>
+        <td><%= DateTime.strptime(elem[0],'%s').strftime("%H:%M:%S %Y-%m-%d") %></td>
+        <td><%= elem[1][0] %></td>
+        <td>
+          <% elem[1][1].each do |pars| %>
+            <p class="text-info"><%= pars[0] %>  =>  [<%= pars[1]%>]</p>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+</div>

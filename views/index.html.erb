@@ -1,0 +1,17 @@
+
+  <h1>RG Courses Spring 2017</h1>
+  <h2>Codebreaker Rack App</h2>
+    <p class="lead"><span>Introducing Codebreaker</span></p>
+    <p class="lead">Codebreaker is a logic game in which a code-breaker tries to break a secret code created by a code-maker. The code-maker, which will be played by the application we’re going to write, creates a secret code of four numbers between 1 and 6.</p>
+    <p class="lead">The code-breaker then gets some number of chances to break the code. In each turn, the code-breaker makes a guess of four numbers. The code-maker then marks the guess with up to four + and - signs.</p>
+    <p class="lead">A + indicates an exact match: one of the numbers in the guess is the same as one of the numbers in the secret code and in the same position.</p>
+    <p class="lead">A - indicates a number match: one of the numbers in the guess is the same as one of the numbers in the secret code but in a different position.</p>
+    <center>
+      <form method="post" action="/game" class="form-inline">
+        <div class="form-group">
+          <input type="text" class="form-control" id="user_name" name="user_name" pattern="[A-Za-zА-Яа-яЁё0-9]{3,}" placeholder="Enter User Name" autofocus>
+          <input type="submit" class="btn btn-success" value="Submit">
+        </div>
+      </form>
+      <br><a href="/score"><button type="button" class="btn btn-success">Score</button></a>
+    </center>
